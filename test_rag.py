@@ -21,17 +21,15 @@ chunks = text_splitter.split_documents(docs)
 # 4. Create vector embeddings and store locally in ChromaDB
 embeddings = OllamaEmbeddings(model="nomic-embed-text")
 vector_store = Chroma.from_documents(
-    documents=chunks, 
-    embedding=embeddings, 
-    persist_directory="./chroma_db"
+    documents=chunks, embedding=embeddings, persist_directory="./chroma_db"
 )
 
 # 5. Set up the local retrieval chain with a lightweight model (Qwen 2.5 1.5B)
 llm = ChatOllama(model="qwen2.5:1.5b", temperature=0)
 qa_chain = RetrievalQA.from_chain_type(
-    llm=llm, 
-    chain_type="stuff", 
-    retriever=vector_store.as_retriever(search_kwargs={"k": 2})
+    llm=llm,
+    chain_type="stuff",
+    retriever=vector_store.as_retriever(search_kwargs={"k": 2}),
 )
 
 # 6. Query the system
